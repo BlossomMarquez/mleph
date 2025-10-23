@@ -1,3 +1,9 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://saqodazywonhbxuxwfjm.supabase.co'
+const supabaseKey = process.env.SUPABASE_KEY
+const supabase = createClient(supabaseUrl, supabaseKey)
+
 import { supabase } from './supabaseClient.js'
 
 const form = document.getElementById('upload-form')

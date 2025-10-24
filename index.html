@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supabase Gallery</title>
 </head>
 <body>
-    <div>
-        <form id="uploadForm">
-            <input type="text" id="title" placeholder="Enter caption" required>
-            <input type="image" id="image" accept="image/*" required>
-            <button type="submit">Upload</button>
-        </form>
-    </div>
-    <div id="gallery"></div>
-    <script type="module" src="./app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script type="module" src="./app.js"></script>
+  <div>
+    <form id="uploadForm">
+      <input type="text" id="title" placeholder="Enter caption" required />
+      <input type="file" id="image" accept="image/*" required />
+      <button type="submit">Upload</button>
+    </form>
+  </div>
 
+  <div id="gallery"></div>
+
+  <!-- Main script -->
+  <script type="module" src="./app.js"></script>
 </body>
 </html>

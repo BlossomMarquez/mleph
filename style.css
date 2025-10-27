@@ -1,0 +1,218 @@
+/* Reset and Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: sans-serif;
+  text-decoration: none;
+  transition: linear 0.5s;
+}
+
+body {
+  margin: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas:
+    "main gal gal"
+    ". gal gal";
+  gap: 1rem;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+button[type="submit"] {
+  width: 100%;
+  border: none;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  background-color: #f0f0f0;
+}
+
+button[type="submit"]:hover {
+  background-color: #dadada;
+}
+
+button[type="submit"]:active {
+  background-color: #c1c1c1;
+}
+
+label {
+  width: 100%;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  text-align: center;
+  background-color: #f0f0f0;
+}
+
+label:hover {
+  background-color: #dadada;
+}
+
+label:active {
+  background-color: #c1c1c1;
+}
+
+img {
+  width: 100%;
+}
+
+#modalContent > img {
+  height: 100%;
+  width: auto;
+}
+
+#h1 {
+  font-size: 2rem;
+  grid-area: head;
+  letter-spacing: -0.1rem;
+  margin-bottom: 1rem;
+}
+
+#info {
+  grid-area: info;
+  line-height: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+#head {
+    font-size: 0.9rem;
+  width: 100%;
+  height: 2rem;
+  margin-bottom: 0.25rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  border: solid 0.05rem black;
+  resize: none;
+}
+
+#title /* caption */ {
+  font-size: 0.9rem;
+  width: 100%;
+  height: 10rem;
+  margin-bottom: 0.25rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  border: solid 0.05rem black;
+  resize: none;
+}
+
+#count1, #count2 {
+  font-size: 0.75rem;
+  margin-left: auto;
+  margin-bottom: 1rem;
+}
+
+#checkboxCategories {
+  margin-bottom: 1rem;
+}
+
+#tags {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+  grid-template-areas: "ani pla peo uns";
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+#animals {
+  grid-area: ani;
+}
+
+#plants {
+  grid-area: pla;
+}
+
+#people {
+  grid-area: peo;
+}
+
+#unsorted {
+  grid-area: uns;
+}
+
+#plants,
+#animals,
+#people,
+#architecture {
+  font-size: 0.8rem;
+  background-color: black;
+  color: white;
+  margin-right: 0.1rem;
+}
+
+#modalTags {
+  font-size: 0.8rem;
+  margin-right: 0.1rem;
+}
+
+#gallery {
+  grid-area: gal;
+  display: flex;
+  flex-wrap: wrap;
+  /* grid-template-columns: repeat(2, 1fr); */
+  gap: 1rem;
+  max-width: 100%;
+}
+
+#imageModal {
+  display: none;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+}
+
+#modalContent {
+  gap: 1rem;
+  color: white;
+  max-width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+#modalImg {
+  max-height: 100vh;
+  max-width: 100vw;
+  object-fit: contain;
+}
+
+#modalText {
+    margin: 25vh 1rem;
+    overflow: scroll;
+}
+
+#modalCaption {
+  margin-bottom: 1rem;
+}
+
+#modalClose {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+.main {
+  grid-area: main;
+}
+
+.child {
+  flex: 1 0 25%;
+  flex-basis: 25%;
+}

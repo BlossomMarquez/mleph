@@ -1,22 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supabase Gallery</title>
-</head>
-<body>
-  <div>
-    <form id="uploadForm">
-      <input type="text" id="title" placeholder="Enter caption" required />
-      <input type="file" id="image" accept="image/*" required />
-      <button type="submit">Upload</button>
-    </form>
-  </div>
-
-  <div id="gallery"></div>
-
-  <!-- Main script -->
-  <script type="module" src="./app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" href="./eph-fancy@0.1x.png" type="image/x-icon" />
+    <title>MLEPH</title>
+    <style></style>
+  </head>
+  <body>
+    <div class="main">
+      <p id="h1">
+        <a href=".">MLEPH</a>
+        <!-- <br><span id="title">my little enchanted parkside home</span>-->
+      </p>
+      <p id="info">
+        My little enchanted parkside home is an on going digital public art
+        project.<br />
+        It is an exploration of the concept of public space, particularly that
+        of public space within a
+        <a href="https://archis.org/volume/smooth-city-is-the-new-urban/"
+          >smooth city</a
+        >
+      </p>
+      <form id="uploadForm" class="h2">
+        <textarea id="head" placeholder="Enter a title for this post" maxlength="64" required></textarea>
+        <div id="count1">
+          <span id="current1">0</span>
+          <span id="maximum1">/ 64</span>
+        </div>
+        <textarea
+          id="title"
+          placeholder="This form allows for simple inline html modifications such as: <b>,<i>,<u>, etc..."
+          maxlength="1024"
+          required
+        ></textarea>
+        <div id="count2">
+          <span id="current2">0</span>
+          <span id="maximum2">/ 1024</span>
+        </div>
+        <input type="file" id="imageUpload" accept="image/*" required /><label
+          id="upload"
+          for="imageUpload"
+          >Select Image</label
+        >
+        <p id="checkboxCategories">Pick the categorie(s) that this image should be sorted into:</p>
+        <div id="tags">
+            <label><input type="checkbox" name="tags" value="plants">Plants</label>
+            <label><input type="checkbox" name="tags" value="animals">Animals</label>
+            <label><input type="checkbox" name="tags" value="people">People</label>
+            <label><input type="checkbox" name="tags" value="architecture">Architecture</label>
+        </div>
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+    <div id="gallery"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script type="module" src="./app.js"></script>
+    <script src="./textcounter.js"></script>
+  </body>
 </html>

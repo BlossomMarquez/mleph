@@ -17,6 +17,10 @@ body {
   gap: 1rem;
 }
 
+a, a:active, a:hover, a:after {
+    color: blue;
+}
+
 form {
   display: flex;
   flex-wrap: wrap;
@@ -89,7 +93,7 @@ img {
     font-size: 0.9rem;
   width: 100%;
   height: 2rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
   padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   border: solid 0.05rem black;
   resize: none;
@@ -99,7 +103,7 @@ img {
   font-size: 0.9rem;
   width: 100%;
   height: 10rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
   padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   border: solid 0.05rem black;
   resize: none;
@@ -145,9 +149,10 @@ img {
 #people,
 #architecture {
   font-size: 0.8rem;
-  background-color: black;
+  background-color: blue;
   color: white;
   margin-right: 0.1rem;
+  padding: 0.25rem;
 }
 
 #modalTags {
@@ -190,8 +195,13 @@ img {
   object-fit: contain;
 }
 
+#modalHead {
+     margin-bottom: .25rem;
+    font-size: 1.5rem;
+}
+
 #modalText {
-    margin: 25vh 1rem;
+    margin: 10vh 1rem;
     overflow: scroll;
 }
 
@@ -210,6 +220,15 @@ img {
 
 .main {
   grid-area: main;
+}
+
+.head {
+    margin-bottom: .25rem;
+    font-size: 1.5rem;
+}
+
+.caption {
+    margin-bottom: .5rem;
 }
 
 .child {

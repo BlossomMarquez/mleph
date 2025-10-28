@@ -157,10 +157,7 @@ function createFigure(imageUrl, head, title, tags) {
     title.length > maxLength ? title.slice(0, maxLength) + "..." : title;
 
   figure.innerHTML = `
-    <img src="${imageUrl}" alt="${title.replace(
-    /<[^>]+>/g,
-    ""
-  )}" style="cursor:pointer;">
+    <img src="${imageUrl}" alt="${tags}" style="cursor:pointer;">
   <div class="head">${head}</div>
     <figcaption class="caption">${truncated}</figcaption>
     <div class="tags">
@@ -256,10 +253,7 @@ async function loadGallery() {
         data-head ="${cleanHead}"
         data-title="${cleanCaption.replace(/"/g, "&quot;")}"
             data-tags='${JSON.stringify(item.tags)}'>
-          <img src="${item.image_url}" alt="${cleanCaption.replace(
-        /<[^>]+>/g,
-        ""
-      )}" style="cursor:pointer;">
+          <img src="${item.image_url}" alt="${item.tags}" style="cursor:pointer;">
       <div class="head">${cleanHead}</div>
           <figcaption class="caption" data-fulltext="${cleanCaption}">${truncated}</figcaption>
           <div class="tags">${tagList}</div>

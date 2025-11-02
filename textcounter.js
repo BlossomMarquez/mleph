@@ -35,3 +35,21 @@ document.addEventListener('DOMContentLoaded', () => {
     current2.textContent = textarea2.value.length;
   });
 });
+
+// Tags counter
+document.addEventListener('DOMContentLoaded', () => {
+  const textarea3 = document.querySelector('input#customTagInput');
+  const current3 = document.getElementById('current3');
+  const maximum3 = document.getElementById('maximum3');
+
+  if (!textarea3 || !current3 || !maximum3) return;
+
+  // initialize
+  current3.textContent = textarea3.value.length;
+  maximum3.textContent = '/ ' + (textarea3.getAttribute('maxlength') || '128');
+
+  // update on input
+  textarea3.addEventListener('input', () => {
+    current3.textContent = textarea3.value.length;
+  });
+});

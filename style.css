@@ -2,9 +2,10 @@
 * {
   box-sizing: border-box;
   margin: 0;
-  font-family: sans-serif;
+  font-family: "Lausanne", sans-serif;
   text-decoration: none;
   transition: linear 0.5s;
+  hyphens: manual;
 }
 
 body {
@@ -15,15 +16,21 @@ body {
     "main gal gal"
     ". gal gal";
   gap: 1rem;
+  background-color: #739b5b;
+  color: #f2db30;
 }
 
-a, a:active, a:hover, a:after {
-    color: blue;
+a,
+a:active,
+a:hover,
+a:after {
+  color: #ea2a34;
 }
 
 form {
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 1rem;
 }
 
 input[type="file"] {
@@ -34,20 +41,50 @@ input[type="checkbox"] {
   margin-right: 0.5rem;
 }
 
+textarea {
+  background-color: #ec5434;
+  color: #f2db30;
+  border: none;
+  outline: none;
+}
+
+textarea:focus {
+  border: solid 0.1rem #f2db30;
+  outline: solid 0.1rem #f2db30;
+  transition: none;
+}
+
+input {
+  background-color: #ec5434;
+  color: #f2db30;
+  border: none;
+  outline: none;
+}
+
+input:focus {
+  border: solid 0.1rem #f2db30;
+  outline: solid 0.1rem #f2db30;
+  transition: none;
+}
+
+button {
+  background-color: #ec5434;
+  color: #f2db30;
+}
+
 button[type="submit"] {
   width: 100%;
   border: none;
   padding: 0.5rem;
   font-size: 0.9rem;
-  background-color: #f0f0f0;
 }
 
 button[type="submit"]:hover {
-  background-color: #dadada;
+  background-color: #ea2a34;
 }
 
 button[type="submit"]:active {
-  background-color: #c1c1c1;
+  background-color: #c52029;
 }
 
 label {
@@ -56,15 +93,16 @@ label {
   margin-bottom: 1rem;
   padding: 0.5rem;
   text-align: center;
-  background-color: #f0f0f0;
+  background-color: #ec5434;
+  color: #f2db30;
 }
 
 label:hover {
-  background-color: #dadada;
+  background-color: #ea2a34;
 }
 
 label:active {
-  background-color: #c1c1c1;
+  background-color: #c52029;
 }
 
 img {
@@ -81,22 +119,81 @@ img {
   grid-area: head;
   letter-spacing: -0.1rem;
   margin-bottom: 1rem;
+  color: #ec5434;
 }
 
 #info {
   grid-area: info;
   line-height: 1.25rem;
+  margin: 2rem;
+  width: auto;
+  height: fit-content;
+  cursor: default;
+}
+
+#infoModal {
   margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+#contentOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 55%;
+  height: 100%;
+  z-index: 1001;
+  cursor: pointer;
+}
+
+#mlephImg {
+  width: 50vw;
+  height: auto;
+}
+
+/*----------------------
+!!! INFO MODAL !!!
+----------------------*/
+#content {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(115, 155, 91, 0.75);
+  color: #f2db30;
+  padding: 2rem;
+  cursor: default;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: none;
+}
+
+#content.visible {
+  display: flex;
+}
+
+#closeModal {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 30px;
+  color: #f2db30;
+  cursor: pointer;
+  z-index: 1002;
+}
+
+#closeModal:hover {
+  cursor: pointer;
 }
 
 #head {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
   width: 100%;
   height: 2rem;
   margin-bottom: 0.5rem;
   padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-  border: solid 0.05rem black;
   resize: none;
+  overflow: hidden;
 }
 
 #title /* caption */ {
@@ -105,59 +202,36 @@ img {
   height: 10rem;
   margin-bottom: 0.5rem;
   padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-  border: solid 0.05rem black;
   resize: none;
 }
 
-#count1, #count2 {
+#count1,
+#count2,
+#count3 {
   font-size: 0.75rem;
   margin-left: auto;
   margin-bottom: 1rem;
 }
 
-#checkboxCategories {
-  margin-bottom: 1rem;
-}
-
-#tags {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+#customTagInput {
+  font-size: 0.9rem;
   width: 100%;
-  grid-template-areas: "ani pla peo uns";
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  height: 2rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  resize: none;
 }
 
-#animals {
-  grid-area: ani;
-}
-
-#plants {
-  grid-area: pla;
-}
-
-#people {
-  grid-area: peo;
-}
-
-#unsorted {
-  grid-area: uns;
-}
-
-#plants,
-#animals,
-#people,
-#architecture {
-  font-size: 0.8rem;
-  background-color: blue;
-  color: white;
-  margin-right: 0.1rem;
-  padding: 0.25rem;
+#tagContainer {
+  margin-top: 0.25rem;
+  overflow: scroll;
+  width: auto;
+  height: 35vh;
 }
 
 #modalTags {
   font-size: 0.8rem;
-  margin-right: 0.1rem;
+  margin: 0rem 0.1rem 0.25rem 0;
 }
 
 #gallery {
@@ -182,7 +256,7 @@ img {
 
 #modalContent {
   gap: 1rem;
-  color: white;
+  color: #f2db30;
   max-width: 100%;
   height: 100%;
   display: grid;
@@ -196,13 +270,13 @@ img {
 }
 
 #modalHead {
-     margin-bottom: .25rem;
-    font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.5rem;
 }
 
 #modalText {
-    margin: 10vh 1rem;
-    overflow: scroll;
+  margin: 10vh 1rem;
+  overflow: scroll;
 }
 
 #modalCaption {
@@ -214,8 +288,9 @@ img {
   top: 20px;
   right: 30px;
   font-size: 30px;
-  color: white;
+  color: #f2db30;
   cursor: pointer;
+  z-index: 1002;
 }
 
 .main {
@@ -223,15 +298,218 @@ img {
 }
 
 .head {
-    margin-bottom: .25rem;
-    font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.5rem;
 }
 
 .caption {
-    margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 .child {
   flex: 1 0 25%;
   flex-basis: 25%;
+}
+
+span {
+  width: fit-content;
+}
+
+#tagContainer > .tag {
+  font-size: 0.8rem;
+  background-color: rgba(0, 0, 0, 0);
+  color: #f2db30;
+  border: solid 0.1rem #f2db30;
+  line-height: 2.25rem;
+  padding: 0.25rem;
+  cursor: pointer;
+}
+
+#tagContainer > .tag.active {
+  font-size: 0.8rem;
+  background-color: #ec5434;
+  color: #f2db30;
+  border: solid 0.1rem #ec5434;
+  padding: 0.25rem;
+}
+
+.tag {
+  font-size: 0.8rem;
+  background-color: #ec5434;
+  color: #f2db30;
+  margin: 0.25rem;
+  padding: 0.4rem;
+  line-height: 2.25rem;
+  transition: none;
+}
+
+/* --------------------------------------------
+   Responsive Adjustments for Mobile (≤768px)
+-------------------------------------------- */
+@media (max-width: 768px) {
+  body {
+    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Gallery becomes single-column, larger images */
+  #gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .child {
+    flex: 1 0 100%;
+    flex-basis: 100%;
+  }
+
+  /* Headings and text */
+  #h1 {
+    font-size: 3rem;
+    text-align: center;
+    color: #ec5434;
+  }
+
+  .head {
+    font-size: 1.25rem;
+    text-align: center;
+  }
+
+  .caption {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  /* Form layout: stack vertically */
+  form {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  label,
+  input,
+  textarea,
+  button {
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  textarea {
+    height: 6rem;
+  }
+
+  #head,
+  #customTagInput {
+    height: 2.5rem;
+  }
+
+  #tagContainer {
+    max-height: 15vh;
+  }
+
+  #tagContainer > .tag {
+    font-size: 0.8rem;
+    background-color: rgba(0, 0, 0, 0);
+    color: #f2db30;
+    border: solid 0.1rem #f2db30;
+    margin: 0.1rem;
+    padding: 0.25rem;
+    line-height: 2.25rem;
+    transition: none;
+    height: 2rem;
+    text-align: center;
+  }
+
+  #tagContainer > .tag.active {
+    font-size: 0.8rem;
+    background-color: #ec5434;
+    color: #f2db30;
+    border: solid 0.1rem #ec5434;
+    margin: 0.1rem;
+    padding: 0.25rem;
+    line-height: 2.25rem;
+    transition: none;
+  }
+
+  /* Modal: single column with stacked image/text */
+  #modalContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+
+  #modalImg {
+    max-width: 95vw;
+    max-height: 50vh;
+  }
+
+  #modalText {
+    margin: 1rem 0;
+    width: 100%;
+  }
+
+  #modalHead {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  #modalCaption {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  #modalTags {
+    text-align: center;
+  }
+
+  #modalClose {
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    color: #f2db30;
+  }
+
+  /* Info modal and mleph image */
+  #content {
+    padding: 1rem;
+    background-color: rgba(115, 155, 91, 0.75);
+    overflow: scroll;
+  }
+
+  #content.visible {
+    display: block;
+  }
+
+  #contentOverlay {
+    height: 40vh;
+    width: 100vw;
+  }
+
+  #mlephImg {
+    width: 80vw;
+  }
+
+  /* Reduce margin/padding overall */
+  #info {
+    margin: 1rem;
+  }
+
+  button[type="submit"] {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+@font-face {
+  font-family: "Lausanne";
+  src: url("./fonts/TWKLausanne-400.woff");
+  font-weight: 400;
+  font-style: normal;
 }

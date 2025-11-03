@@ -4,6 +4,27 @@ const form = document.getElementById("uploadForm");
 const gallery = document.getElementById("gallery");
 const fileInput = document.getElementById("imageUpload");
 const fileLabel = document.getElementById("upload");
+const tagContainer = document.getElementById("tagContainer");
+
+const truncateText = (str, maxLength = 50) =>
+  str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
+
+function setModalScrollLock(isLocked) {
+  document.body.style.overflow = isLocked ? "hidden" : "";
+}
+
+function openModal(modal) {
+  document.querySelectorAll(".modal.visible").forEach((m) => {
+    if (m !== modal) closeModal(m);
+  });
+  modal.classList.add("visible");
+  setModalScrollLock(true);
+}
+
+function closeModal(modal) {
+  modal.classList.remove("visible");
+  setModalScrollLock(false);
+}
 
 // ---------------------------
 // File input and label handling
@@ -27,96 +48,113 @@ fileInput.addEventListener("change", () => {
   }
 });
 
+const infoModal = document.createElement("div");
+infoModal.id = "infoModalButton";
+infoModal.textContent = "info";
+document.body.appendChild(infoModal);
+
+const infoContent = document.createElement("div");
+infoContent.id = "infoContent";
+infoContent.classList.add("modal");
+infoContent.innerHTML = `
+<div class="modal-inner">
+<img id="mlephImg" src="./mlephImg.svg">
+<p id="infoText"></p>
+<span class="closeModal">&times;</span>
+<div class="modal-overlay"></div>
+</div>
+`;
+document.body.appendChild(infoContent);
+
 // On-click infoModal content
 fetch("./infoModal.json")
-  .then((response) => response.json())
+  .then((res) => res.json())
   .then((data) => {
-    const infoButton = document.createElement("div");
-    infoButton.id = "infoModal";
-    infoButton.textContent = "info";
-
-    const content = document.createElement("div");
-    content.id = "content";
-    content.innerHTML = `
-<img id="mlephImg" src="./mlephImg.svg">
- <p id="info">${data.body}
- <br>
- <br>
- Developed by:
- <a href="${data.website}">
- ${data.developer} 
-</a>  </p>
-  <span id="closeModal">&times;</span>
-  <div id="contentOverlay"></div>
-`;
-
-    const formSection = document.getElementById("uploadForm");
-    formSection.parentNode.insertBefore(infoButton, formSection);
-
-    document.body.appendChild(content);
-
-    const closeModal = content.querySelector("#closeModal");
-    const contentOverlay = content.querySelector("#contentOverlay");
-
-    infoButton.addEventListener("click", () => {
-      content.classList.toggle("visible");
-      console.log("clicked infoButton");
-    });
-
-    closeModal.addEventListener("click", function () {
-      content.classList.remove("visible");
-    });
-
-    window.addEventListener("click", (e) => {
-      if (e.target === contentOverlay) {
-        content.classList.remove("visible");
-      }
-    });
+    infoContent.querySelector("#infoText").innerHTML = `
+    ${data.body}<br><br>
+    Developed by: <a href="${data.website}" target="_blank">${data.developer}</a>`;
   })
-  .catch((err) => console.error("Error loading infoModal.json:", err));
+  .catch((err) => console.error("Error loading infoModal.json", err));
 
-// ---------------------------
-// On-click image modal content
-// ---------------------------
-const modal = document.createElement("div");
-modal.id = "imageModal";
-modal.innerHTML = `
-<div id="modalContent">
+const imageModal = document.createElement("div");
+imageModal.id = "imageModal";
+imageModal.classList.add("modal");
+imageModal.innerHTML = `
+<div class="modal-inner">
 <img id="modalImg">
 <div id="modalText">
 <div id="modalHead"></div>
 <figcaption id="modalCaption"></figcaption>
-<div id="modalTags">Tags:</div>
+<div id="modalTags">Tags</div>
 </div>
+<span class="modal-close">&times;</span>
+<div class="modal-overlay"></div>
 </div>
-<span id="modalClose">&times;</span>
 `;
+document.body.appendChild(imageModal);
 
-document.body.appendChild(modal);
+const modalImg = imageModal.querySelector("#modalImg");
+const modalHead = imageModal.querySelector("#modalHead");
+const modalCaption = imageModal.querySelector("#modalCaption");
+const modalTags = imageModal.querySelector("#modalTags");
 
-const modalImg = document.getElementById("modalImg");
-const modalClose = document.getElementById("modalClose");
+document.addEventListener("click", (e) => {
+  if (e.target.id === "infoModalButton") {
+    openModal(infoContent);
+  }
 
-modalClose.onclick = () => (modal.style.display = "none");
-modal.onclick = (e) => {
-  if (e.target === modal) modal.style.display = "none";
-};
+  if (e.target.closest("#gallery figure img")) {
+    const figure = e.target.closest("figure");
+    const tags = JSON.parse(figure.dataset.tag || "[]");
 
-const imgOverlay = document.getElementById("imageOverlay");
-window.addEventListener("click", (e) => {
-  if (e.target === imgOverlay) {
-    modal.style.display = "none";
+    modalImg.src = figure.dataset.url;
+    modalHead.innerHTML = figure.dataset.head;
+    modalCaption.innerHTML = figure.data.title;
+    modalTags.innerHTML = tags
+      .map(
+        (t) => `<span class="tag" id="${t.replace(/\s+/g, "-")}">${t}</span>`
+      )
+      .join(" ");
+
+    openModal(imageModal);
+  }
+
+  if (
+    e.target.classList.contains("modal-close") ||
+    e.target.classList.contains("modal-overlay")
+  ) {
+    const modal = e.target.closest(".modal");
+    if (modal) close(modal);
+  }
+
+  if (e.target.closest("#tagContainer .tag")) {
+    e.target.classList.toggle("active");
+    const selectedTags = Array.from(
+      tagContainer.querySelectorAll(".tag.active")
+    ).map((el) => el.dataset.tag);
+    updateGallery(selectedTags);
+  }
+
+  if (e.target.classList.contains("caption")) {
+    const fullText = e.target.dataset.fulltext;
+    const isTruncated = e.target.textContent.endsWith("...");
+    e.target.textContent = isTruncated ? fullText : truncateText(fullText);
   }
 });
 
-// ---------------------------
-// Load gallery and subscribe on page load
-// ---------------------------
-window.addEventListener("DOMContentLoaded", async () => {
-  await loadGallery();
-  attachImageModalEvents();
-  loadAllTags();
-  subscribeToUpdates();
+function closeModal() {
+  modal.classList.remove("visible");
+  document.body.style.overflow = "";
+
+  modalImg.src = "";
+  modalHead.innerHTML = "";
+  modalCaption.innerHTML = "";
+  modalTags.innerHTML = "";
+}
+modalClose.addEventListener("click", closeModal);
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) closeModal();
 });
 
 // ---------------------------
@@ -125,12 +163,14 @@ window.addEventListener("DOMContentLoaded", async () => {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const head = document.getElementById("head").value;
-  const cleanHead = DOMPurify.sanitize(head, {
+  const cleanHead = DOMPurify.sanitize(document.getElementById("head").value, {
     ALLOWED_TAGS: ["b", "i", "em", "strong", "br"],
     ALLOWED_ATTR: ["target"],
   });
-  const title = document.getElementById("title").value;
+  const title = DOMPurify.sanitize(document.getElementById("title").value, {
+    ALLOWED_TAGS: ["b", "i", "em", "strong", "br"],
+    ALLOWED_ATTR: ["target"],
+  });
   const rawTags = document.getElementById("customTagInput").value;
 
   const uniqueTags = [
@@ -158,16 +198,7 @@ form.addEventListener("submit", async (e) => {
   const placeholder = document.createElement("figure");
   placeholder.classList.add("loading");
   placeholder.innerHTML = `
-    <div class="loading-placeholder" style="
-      width: 200px;
-      height: 200px;
-      background: #eee;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      color: #000000ff;
-    ">
+    <div class="loading-placeholder">
       Uploading...
     </div>
   `;
@@ -177,23 +208,15 @@ form.addEventListener("submit", async (e) => {
   const { data: fileData, error: fileError } = await supabase.storage
     .from("gallery")
     .upload(fileName, file);
-  if (fileError) {
-    console.error(fileError);
-    alert(fileError.message);
-    gallery.removeChild(placeholder);
-    return;
-  }
+  if (fileError) return;
+  alert(fileError.message);
 
   // Get public URL
   const { data: publicData, error: urlError } = await supabase.storage
     .from("gallery")
     .getPublicUrl(fileName);
-  if (urlError) {
-    console.error(urlError);
-    alert(urlError.message);
-    gallery.removeChild(placeholder);
-    return;
-  }
+  if (urlError) return;
+  alert(urlError.message);
 
   const imageUrl = publicData.publicUrl;
 
@@ -203,12 +226,7 @@ form.addEventListener("submit", async (e) => {
     .insert([{ head: cleanHead, title, image_url: imageUrl }])
     .select();
 
-  if (insertError) {
-    console.error(insertError);
-    alert(insertError.message);
-    gallery.removeChild(placeholder);
-    return;
-  }
+  if (insertError) alert(insertError.message);
 
   const imageId = galleryData[0].id;
 
@@ -220,290 +238,95 @@ form.addEventListener("submit", async (e) => {
       }))
     );
 
-    if (tagError) {
-      console.error(tagError);
-      alert(tagError.message);
-      gallery.removeChild(placeholder);
-      return;
-    }
+    if (tagError) return;
+    alert(tagError.message);
   }
 
-  console.log(uniqueTags);
+  const figure = createFigure(imageUrl, head, title, uniqueTags);
+  gallery.replaceChild(figure, placeholder);
+
   // Reset form and label
   form.reset();
-  document.getElementById("customTagInput").value = "";
   fileLabel.textContent = "Select Image";
-
-  // Replace placeholder with actual image
-  const figure = createFigure(imageUrl, cleanHead, title, uniqueTags);
-  gallery.replaceChild(figure, placeholder);
+  document.getElementById("customTagInput").value = "";
 });
 
-function createFigure(imageUrl, head, title, tag) {
+function createFigure(url, head, title, tag) {
   const figure = document.createElement("figure");
   figure.classList.add("child");
-
-  const maxLength = 50;
-  const truncated =
-    title.length > maxLength ? title.slice(0, maxLength) + "..." : title;
+  figure.dataset.url = url;
+  figure.dataset.head = head;
+  figure.dataset.title = title;
+  figure.dataset.tag = JSON.stringify(tags);
 
   figure.innerHTML = `
-    <img src="${imageUrl}" alt="${tag}" style="cursor:pointer;">
+    <img src="${Url}" alt="${tags.join(", ")}" style="cursor:pointer;">
   <div class="head">${head}</div>
-    <figcaption class="caption">${truncated}</figcaption>
+    <figcaption class="caption" data-fulltext="${title}">${truncateText(
+    title
+  )}</figcaption>
     <div class="tags">
-    ${tag
-      .map(
-        (t) => `<span class="tag" id="${t.replace(/\s+/g, "-")}">${t}</span>`
-      )
-      .join(" ")}
+    ${tag.map((t) => `<span class="tag">${t}</span>`).join(" ")}
     </div>
   `;
-
-  const img = figure.querySelector("img");
-  img.addEventListener("click", () => {
-    const modalCaption = document.getElementById("modalCaption");
-    const modalHead = document.getElementById("modalHead");
-    const modalTags = document.getElementById("modalTags");
-
-    modalImg.src = imageUrl;
-    modalCaption.innerHTML = title;
-    modalHead.innerHTML = head;
-    modalTags.innerHTML = tag
-      .map(
-        (t) => `<span class="tag" id="${t.replace(/\s+/g, "-")}">${t}</span>`
-      )
-      .join(" ");
-
-    modal.style.display = "flex";
-  });
-
-  const captionEl = figure.querySelector(".caption");
-  captionEl.addEventListener("click", () => {
-    captionEl.textContent =
-      captionEl.textContent === truncated ? title : truncated;
-  });
-
   return figure;
 }
-
 // // ---------------------------
 // // Build gallery from database
-// // ---------------------------
-async function renderGallery(images) {
-  const gallery = document.getElementById("gallery");
-  if (!images || images.length === 0) {
-    gallery.innerHTML = "<p>No images found.</p>";
-    return;
-  }
-
-  gallery.innerHTML = images
-    .map((item) => {
-      const tagsArray = item.image_tags?.map((t) => t.tag) || [];
-      const cleanHead = DOMPurify.sanitize(item.head, {
-        ALLOWED_TAGS: ["b", "i", "em", "strong", "u", "br"],
-        ALLOWED_ATTR: ["target"],
-      });
-      const cleanCaption = DOMPurify.sanitize(item.title, {
-        ALLOWED_TAGS: ["b", "i", "em", "strong", "u", "br"],
-        ALLOWED_ATTR: ["target"],
-      });
-
-      const maxLength = 50;
-      const truncated =
-        item.title.length > maxLength
-          ? item.title.slice(0, maxLength) + "..."
-          : item.title;
-
-      const tagList = tagsArray
-        .map((t) => `<span class="tag">${t}</span>`)
-        .join(" ");
-
-      return `
-        <figure class="child"
-        data-url="${item.image_url}"
-        data-head ="${cleanHead}"
-        data-title="${cleanCaption.replace(/"/g, "&quot;")}"
-            data-tag='${JSON.stringify(tagsArray)}'>
-          <img src="${item.image_url}" alt="${tagsArray.join(
-        ", "
-      )}" style="cursor:pointer;">
-      <div class="head">${cleanHead}</div>
-          <figcaption class="caption" data-fulltext="${cleanCaption}">${truncated}</figcaption>
-          <div class="tags">Tags:${tagList}</div>
-        </figure>`;
-    })
-    .join("");
-
-  attachImageModalEvents();
-}
-// // ---------------------------
-// // Load gallery from database
 // // ---------------------------
 async function loadGallery() {
   const { data, error } = await supabase
     .from("gallery")
     .select(`id, head, title, image_url, image_tags(tag)`)
     .order("created_at", { ascending: false });
+  if (error) return console.error(error);
 
-  if (error) {
-    console.error("Load gallery error:", error);
-    return;
-  }
-  renderGallery(data);
-}
-
-gallery.querySelectorAll("figure").forEach((fig) => {
-  const img = fig.querySelector("img");
-  const captionEl = fig.querySelector(".caption");
-
-  captionEl.addEventListener("click", () => {
-    const fullText = captionEl.dataset.fulltext;
-    const truncated =
-      fullText.length > 50 ? fullText.slice(0, 50) + "..." : fullText;
-    const isTruncated = captionEl.textContent.endsWith("...");
-    captionEl.textContent = isTruncated ? fullText : truncated;
-  });
-
-  img.addEventListener("click", () => {
-    const modalCaption = document.getElementById("modalCaption");
-    const modalTags = document.getElementById("modalTags");
-    const modalHead = document.getElementById("modalHead");
-
-    const imageUrl = fig.dataset.url;
-    const cleanHead = fig.dataset.head;
-    const title = fig.dataset.title;
-    let tag = JSON.parse(fig.dataset.tag);
-
-    modalImg.src = imageUrl;
-    modalHead.innerHTML = cleanHead;
-    modalCaption.innerHTML = title;
-
-    modalTags.innerHTML = tag
-      .map(
-        (t) => `<span class="tag" id="${t.replace(/\s+/g, "-")}">${t}</span>`
-      )
-      .join(" ");
-
-    modal.style.display = "flex";
-  });
-});
-
-// ---------------------------
-// Populate tag container
-// ---------------------------
-async function loadAllTags() {
-  const tagContainer = document.getElementById("tagContainer");
-  tagContainer.innerHTML = "<p>Loading tags...</p>";
-
-  const { data, error } = await supabase.from("image_tags").select("tag");
-
-  if (error) {
-    console.error("Error loading tags", error);
-    tagContainer.innerHTML = "<p>Error loading tags</p>";
-    return;
-  }
-
-  const uniqueTags = [...new Set(data.map((item) => item.tag))].sort();
-
-  if (uniqueTags.length === 0) {
-    tagContainer.innerHTML = "<p>No tags</p>";
-    return;
-  }
-
-  tagContainer.innerHTML = uniqueTags
-    .map((tag) => `<span class="tag" data-tag="${tag}">${tag}</span>`)
-    .join(" ");
-
-  tagContainer.addEventListener("click", (e) => {
-    if (e.target.classList.contains("tag")) {
-      e.target.classList.toggle("active");
-      const selectedTags = Array.from(
-        document.querySelectorAll(".tag.active")
-      ).map((el) => el.dataset.tag);
-      updateGallery(selectedTags);
-    }
+  gallery.innerHTML = "";
+  data.forEach((item) => {
+    const tagsArray = item.image_tags?.map((t) => t.tag) || [];
+    const figure = createdFigure(
+      item.image_url,
+      item.head,
+      item.title,
+      tagsArray
+    );
+    gallery.appendChild(figure);
   });
 }
 
 async function updateGallery(selectedTags) {
-  const gallery = document.getElementById("gallery");
+  if (!selectedTags.length) return loadGallery();
 
-  if (selectedTags.length === 0) {
-    await loadGallery();
-    return;
-  }
-
-  const { data: tagMatches, error: tagError } = await supabase
+  const { data: tagMatches, error } = await supabase
     .from("image_tags")
-    .select("image_id, tag")
+    .select("image_id")
     .in("tag", selectedTags);
-
-  if (tagError) {
-    console.error("Error loading tags:", tagError);
-    return;
-  }
+  if (error) return console.error(error);
 
   const matchCounts = {};
-  for (const row of tagMatches) {
+  tagMatches.forEach((row) => {
     matchCounts[row.image_id] = (matchCounts[row.image_id] || 0) + 1;
-  }
+  });
 
-  const matchingImageIds = Object.keys(matchCounts).filter(
+  const matchingIds = Object.keys(matchCounts).filter(
     (id) => matchCounts[id] === selectedTags.length
   );
-
-  if (matchingImageIds.length === 0) {
-    gallery.innerHTML = "<p>No images match all selected tags... yet</p>";
-    return;
-  }
+  if (!matchingIds.length)
+    return (gallery.innerHTML =
+      "<p>No images match all selected tags... yet</p>");
 
   const { data: images, error: imgError } = await supabase
     .from("gallery")
     .select(`id, head, title, image_url, image_tags(tag)`)
-    .in("id", matchingImageIds);
+    .in("id", matchingIds);
+  if (imgError) return console.error(imgError);
 
-  if (imgError) {
-    console.error("Error getting image ids:", imgError);
-    return;
-  }
-  renderGallery(images);
-}
-
-function attachImageModalEvents() {
-  const figures = document.querySelectorAll("#gallery figure.child");
-
-  figures.forEach((fig) => {
-    const img = fig.querySelector("img");
-    const captionEl = fig.querySelector(".caption");
-
-    captionEl.addEventListener("click", () => {
-      const fullText = captionEl.dataset.fulltext;
-      const truncated =
-        fullText.length > 50 ? fullText.slice(0, 50) + "..." : fullText;
-      const isTruncated = captionEl.textContent.endsWith("...");
-      captionEl.textContent = isTruncated ? fullText : truncated;
-    });
-
-    img.addEventListener("click", () => {
-      const modalCaption = document.getElementById("modalCaption");
-      const modalTags = document.getElementById("modalTags");
-      const modalHead = document.getElementById("modalHead");
-
-      const imageUrl = fig.dataset.url;
-      const cleanHead = fig.dataset.head;
-      const title = fig.dataset.title;
-      const tag = JSON.parse(fig.dataset.tag);
-
-      modalImg.src = imageUrl;
-      modalHead.innerHTML = cleanHead;
-      modalCaption.innerHTML = title;
-      modalTags.innerHTML = tag
-        .map((t) => `<span class="tag">${t}</span>`)
-        .join(" ");
-
-      modal.style.display = "flex";
-    });
+  gallery.innerHTML = "";
+  images.forEach((item) => {
+    const tagsArray = item.image_tags?.map((t) => t.tag) || [];
+    gallery.appendChild(
+      createFigure(item.image_url, item.head, item.title, tagsArray)
+    );
   });
 }
 // ---------------------------
@@ -521,20 +344,21 @@ function subscribeToUpdates() {
         // Skip if the figure already exists
         if (
           Array.from(gallery.children).some(
-            (fig) => fig.querySelector("img")?.src === item.image_url
+            (f) => f.querySelector("img")?.src === item.image_url
           )
         )
           return;
-        const figure = createFigure(
-          item.image_url,
-          item.head,
-          item.title,
-          Array.isArray(item.image_tags)
-            ? item.image_tags
-            : item.image_tags.split(",").map((t) => t.trim())
+        const tagsArray = item.image_tags?.map((t) => t.tag) || [];
+        gallery.prepend(
+          createFigure(item.image_url, item.head, item.title, tagsArray)
         );
-        gallery.prepend(figure);
       }
     )
     .subscribe();
 }
+
+window.addEventListener("DOMContentLoaded", async () => {
+  await loadGallery();
+  await loadAllTags();
+  subscribeToUpdates();
+});

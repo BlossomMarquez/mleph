@@ -154,9 +154,7 @@ img {
 /*----------------------
 !!! INFO MODAL !!!
 ----------------------*/
-#infoContent {
-    display: flex;
-}
+
 
 #content {
   height: 100%;
@@ -174,6 +172,10 @@ img {
 
 #content.visible {
   display: flex;
+}
+
+#infoContent {
+    display: flex;
 }
 
 #closeModal {
@@ -495,6 +497,10 @@ span {
   }
 
   #content.visible {
+    display: block;
+  }
+
+  #infoContent {
     display: block;
   }
 

@@ -40,9 +40,7 @@ fileInput.addEventListener("change", () => {
 fetch("./infoModal.json")
   .then((response) => response.json())
   .then((data) => {
-    const infoButton = document.createElement("div");
-    infoButton.id = "infoModalButton";
-    infoButton.textContent = "info";
+    const infoButton = document.getElementById("infoModalButton");
 
     const content = document.createElement("div");
     content.id = "content"; // Info Modal
@@ -56,17 +54,14 @@ fetch("./infoModal.json")
  <a href="${data.website}">
  ${data.developer} 
 </a>  </p>
-  <span id="closeModal">&times;</span>
+  <span class="closeModal">&times;</span>
   <div id="contentOverlay"></div>
   </div>
 `;
 
-    const formSection = document.getElementById("uploadForm");
-    formSection.parentNode.insertBefore(infoButton, formSection);
-
     document.body.appendChild(content);
 
-    const closeModal = content.querySelector("#closeModal");
+    const closeModal = content.querySelector(".closeModal");
     const overlay = content.querySelector("#contentOverlay");
 
     infoButton.addEventListener("click", () => {
@@ -80,6 +75,50 @@ fetch("./infoModal.json")
   })
   .catch((err) => console.error("Error loading infoModal.json:", err));
 
+  fetch("./storyModal.json")
+  .then((response) => response.json())
+  .then((data) => {
+    const stories = data.stories;
+const storyModal = document.createElement("div");
+storyModal.id = "storyModal";
+storyModal.innerHTML = `
+    <div id="storyModalOverlay"></div>
+<div id="storyModalContent">
+  <span class="closeModal">&times;</span>
+  <div id="storyContainer"></div>
+  </div>
+`;
+document.body.appendChild(storyModal);
+
+const closeModal = storyModal.querySelector(".closeModal");
+const overlay = storyModal.querySelector("#storyModalOverlay");
+const storyContainer = storyModal.querySelector("#storyContainer");
+
+stories.forEach((story) => {
+  const storyEl = document.createElement("div");
+  storyEl.classList.add("storyItem");
+  storyEl.innerHTML = `
+  <h2>${story.title}</h2>
+  <p>Written by: ${story.author}</p>
+  <br>
+  <p>${story.description}</p>
+  <br>
+  <a href="${story.link}" target="_blank">Read here</a>
+  `;
+  storyContainer.appendChild(storyEl);
+});
+
+const storyButton = document.getElementById("storyButton");
+storyButton.addEventListener("click", () => {
+      closeAllModals();
+      const isVisible = storyModal.classList.toggle("visible");
+      toggleScrollLock(isVisible);
+    });
+
+    closeModal.addEventListener("click", () => closeAllModals());
+    overlay.addEventListener("click", () => closeAllModals());
+})
+.catch((err) => console.error("Error loading storyModal.json", err));
 // ---------------------------
 // On-click image modal content
 // ---------------------------
@@ -212,9 +251,9 @@ form.addEventListener("submit", async (e) => {
   }
 
   const imageId = galleryData[0].id;
-  await supabase.from("image_tags").insert(
-    uniqueTags.map((tag) => ({image_id: imageId, tag}))
-  );
+  await supabase
+    .from("image_tags")
+    .insert(uniqueTags.map((tag) => ({ image_id: imageId, tag })));
 
   form.reset();
   fileLabel.textContent = "Select Image";
@@ -232,8 +271,7 @@ function createFigure(imageUrl, head, title, tag) {
   figure.dataset.title = title;
   figure.dataset.tags = JSON.stringify(tag);
 
-  const truncated =
-    title.length > 50 ? title.slice(0, 50) + "..." : title;
+  const truncated = title.length > 50 ? title.slice(0, 50) + "..." : title;
 
   figure.innerHTML = `
     <img src="${imageUrl}" alt="${tag}" style="cursor:pointer;">
@@ -244,18 +282,17 @@ function createFigure(imageUrl, head, title, tag) {
     </div>
   `;
 
-const img = figure.querySelector("img");
-const caption = figure.querySelector(".caption");
+  const img = figure.querySelector("img");
+  const caption = figure.querySelector(".caption");
 
-caption.addEventListener("click", () => {
-    caption.textContent = 
-    caption.textContent === truncated ? title : truncated;
-});
+  caption.addEventListener("click", () => {
+    caption.textContent = caption.textContent === truncated ? title : truncated;
+  });
 
-img.addEventListener("click", () => {
+  img.addEventListener("click", () => {
     const tagsArray = JSON.parse(figure.dataset.tags);
-    openImageModal(imageUrl, head, title, tagsArray)
-});
+    openImageModal(imageUrl, head, title, tagsArray);
+  });
 
   return figure;
 }
@@ -290,7 +327,6 @@ gallery.querySelectorAll("figure").forEach((fig) => {
         (t) => `<span class="tag" id="${t.replace(/\s+/g, "-")}">${t}</span>`
       )
       .join(" ");
-
   });
 });
 
@@ -391,10 +427,10 @@ function attachImageModalEvents() {
     });
 
     img.addEventListener("click", () => {
-     const imageUrl = fig.dataset.url;
-     const head = fig.dataset.head;
-     const title = fig.dataset.title;
-     const tags = JSON.parse(fig.dataset.tags || "[]");
+      const imageUrl = fig.dataset.url;
+      const head = fig.dataset.head;
+      const title = fig.dataset.title;
+      const tags = JSON.parse(fig.dataset.tags || "[]");
 
       openImageModal(imageUrl, head, title, tags);
     });

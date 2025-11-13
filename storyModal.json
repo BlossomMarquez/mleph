@@ -1,0 +1,28 @@
+{
+"stories": [
+        {
+            "title": "It Crawled Towards Me, It Called to Me, It Became Me",
+            "author": "Blossom Marquez",
+            "description": "A short story detailing a woman's metaphorical and physical journey to a park. Filled with the grandeur of the amazon and the simplicity of street lights. As she ends one story the next begins, and we are left to wonder where it all goes, what it all means, and why it all happens.",
+            "link": "./story1.html"
+        },
+        {
+            "title": "Stranger than Fiction: Welcome to the Smooth City",
+            "author": "René Boer",
+            "description": "In this snippet from René Boer's book \"Smooth City\" we enter a world that is all to familiar yet entirely alien, this story acts as an introduction to the concept of the smoothy city. A city, town, neighborhood, or space can be smoothened out made irreconcilable to the image of its prior existence. Without any sort of porosity to break up this smoothness we end up with the Smooth City, the automated, opaque, empty mess of modernity.",
+            "link": "./story2.html"
+        },
+         {
+            "title": "Smooth City is the New Urban",
+            "author": "René Boer",
+            "description": "This essay by René Boer is the pre-cursor to his strikingly prescient and relevant book \"Smooth City\". Here the discussion distills what is later expanded upon into a quick and easily understandable critique of the ever expanding and evolving Smooth City. With its scathing critique of gentrification, privitization, and passivity Boer's essay highlights some of the most pressing matters within our contemporary cityscapes.",
+            "link": "./story3.html"
+        },
+        {
+            "title": "(De)Territorialization, (Re)Territorialization, and the Rhizome: Reshaping Design in a Post-Image Society",
+            "author": "Blossom Marquez",
+            "description": "This essay by René Boer is the pre-cursor to his strikingly prescient and relevant book \"Smooth City\". Here the discussion distills what is later expanded upon into a quick and easily understandable critique of the ever expanding and evolving Smooth City. With its scathing critique of gentrification, privitization, and passivity Boer's essay highlights some of the most pressing matters within our contemporary cityscapes.",
+            "link": "./story4.html"
+        }
+]
+}

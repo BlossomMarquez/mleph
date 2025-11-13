@@ -70,6 +70,15 @@ input:focus {
 button {
   background-color: #ec5434;
   color: #f2db30;
+  border: none;
+}
+
+button:hover {
+  background-color: #ea2a34;
+}
+
+button:active {
+  background-color: #c52029;
 }
 
 button[type="submit"] {
@@ -77,14 +86,6 @@ button[type="submit"] {
   border: none;
   padding: 0.5rem;
   font-size: 0.9rem;
-}
-
-button[type="submit"]:hover {
-  background-color: #ea2a34;
-}
-
-button[type="submit"]:active {
-  background-color: #c52029;
 }
 
 label {
@@ -122,18 +123,28 @@ img {
   color: #ec5434;
 }
 
+#subHeadContainer {
+width: 100%;
+margin-bottom: 1rem;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 1rem;
+}
+
 #info {
-  grid-area: info;
   line-height: 1.25rem;
   margin: 2rem;
   width: auto;
   height: fit-content;
   cursor: default;
+  padding: 1rem;
+    background-color: #739b5b;
 }
 
 #infoModalButton {
-  margin-bottom: 1rem;
+  padding: .5rem 1rem;
   cursor: pointer;
+  border: none;
 }
 
 #contentOverlay {
@@ -178,19 +189,42 @@ img {
     display: flex;
 }
 
-#closeModal {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 30px;
+/* END INFO MODAL */
+
+/*----------------------
+!!! STORY MODAL !!!
+----------------------*/
+#storyModal {
+   height: 100%;
+  width: 100%;
+  background-color: rgba(115, 155, 91, 0.75);
   color: #f2db30;
-  cursor: pointer;
-  z-index: 1002;
+  padding: 2rem;
+  cursor: default;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: none;
 }
 
-#closeModal:hover {
-  cursor: pointer;
+#storyModal.visible {
+  display: flex;
 }
+
+#storyModalContent {
+  overflow: scroll;
+  height: auto;
+margin-bottom: 1rem;
+}
+
+#storyContainer {
+  width: 50%;
+   margin-bottom: 10rem;
+}
+
+/* END STORY MODAL */
+
 
 #head {
   font-size: 0.9rem;
@@ -319,6 +353,24 @@ img {
 .child {
   flex: 1 0 25%;
   flex-basis: 25%;
+}
+
+.closeModal {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 30px;
+  color: #f2db30;
+  cursor: pointer;
+  z-index: 1002;
+}
+
+.closeModal:hover {
+  cursor: pointer;
+}
+
+.storyItem {
+  margin-bottom: 1rem;
 }
 
 span {
@@ -516,6 +568,8 @@ span {
   /* Reduce margin/padding overall */
   #info {
     margin: 1rem;
+    padding: 1rem;
+    background-color: #739b5b;
   }
 
   button[type="submit"] {

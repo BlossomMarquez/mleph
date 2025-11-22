@@ -86,6 +86,7 @@ storyModal.innerHTML = `
 <div id="storyModalContent">
   <span class="closeModal">&times;</span>
   <div id="storyContainer"></div>
+  
   </div>
 `;
 document.body.appendChild(storyModal);

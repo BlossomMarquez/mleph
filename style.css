@@ -565,6 +565,18 @@ span {
     width: 80vw;
   }
 
+
+  /* Story Modal */
+
+  #storyModal.visible {
+    display: block;
+    overflow: scroll;
+  }
+
+#storyContainer {
+  width: 100%;
+}
+
   /* Reduce margin/padding overall */
   #info {
     margin: 1rem;

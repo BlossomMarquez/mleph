@@ -124,7 +124,7 @@ document.addEventListener("click", (e) => {
     e.target.classList.contains("modal-overlay")
   ) {
     const modal = e.target.closest(".modal");
-    if (modal) close(modal);
+    if (modal) closeModal(modal);
   }
 
   if (e.target.closest("#tagContainer .tag")) {
@@ -142,8 +142,9 @@ document.addEventListener("click", (e) => {
   }
 });
 
-function closeModal() {
-  modal.classList.remove("visible");
+function clearImageModal() {
+  if (!imageModal) return;
+  imageModal.classList.remove("visible");
   document.body.style.overflow = "";
 
   modalImg.src = "";
@@ -151,10 +152,12 @@ function closeModal() {
   modalCaption.innerHTML = "";
   modalTags.innerHTML = "";
 }
-modalClose.addEventListener("click", closeModal);
 
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) closeModal();
+const modalCloseBtn = imageModal.querySelector(".modal-close");
+if (modalCloseBtn) modalCloseBtn.addEventListener("click", clearImageModal);
+
+imageModal.addEventListener("click", (e) => {
+  if (e.target === imageModal) clearImageModal();
 });
 
 // ---------------------------

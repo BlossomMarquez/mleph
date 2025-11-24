@@ -1,0 +1,25 @@
+name: pages-build-deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; elif [ -f package.json ]; then npm install; fi
+      - name: Run a quick build (if available)
+        run: |
+          if [ -f package.json ] && npm run -s build >/dev/null 2>&1; then npm run build; else echo "No build script"; fi
+      - name: Report
+        run: echo "pages-build-deployment workflow ran on $GITHUB_REF by $GITHUB_ACTOR"

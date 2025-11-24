@@ -26,16 +26,42 @@ const content = fs.readFileSync(supabaseClientPath, 'utf8');
 const escapedUrl = JSON.stringify(SUPABASE_URL);
 const escapedKey = JSON.stringify(SUPABASE_ANON_KEY);
 
-// Replace the placeholders with actual values (already properly escaped)
-const updatedContent = content
-  .replace(
-    /const SUPABASE_URL = ['"]<REDACTED_SUPABASE_URL>['"];/,
-    `const SUPABASE_URL = ${escapedUrl};`
-  )
-  .replace(
-    /const SUPABASE_ANON_KEY = ['"]<REDACTED_SUPABASE_ANON_KEY>['"];/,
-    `const SUPABASE_ANON_KEY = ${escapedKey};`
-  );
+// Track if replacements were successful
+let urlReplaced = false;
+let keyReplaced = false;
+
+// Replace the SUPABASE_URL placeholder
+let updatedContent = content.replace(
+  /const SUPABASE_URL = ['"]<REDACTED_SUPABASE_URL>['"];/,
+  (match) => {
+    urlReplaced = true;
+    return `const SUPABASE_URL = ${escapedUrl};`;
+  }
+);
+
+// Replace the SUPABASE_ANON_KEY placeholder
+updatedContent = updatedContent.replace(
+  /const SUPABASE_ANON_KEY = ['"]<REDACTED_SUPABASE_ANON_KEY>['"];/,
+  (match) => {
+    keyReplaced = true;
+    return `const SUPABASE_ANON_KEY = ${escapedKey};`;
+  }
+);
+
+// Validate that both replacements were successful
+if (!urlReplaced || !keyReplaced) {
+  console.error('ERROR: Failed to inject secrets into supabaseClient.js');
+  if (!urlReplaced) {
+    console.error('  SUPABASE_URL placeholder not found or already replaced');
+  }
+  if (!keyReplaced) {
+    console.error('  SUPABASE_ANON_KEY placeholder not found or already replaced');
+  }
+  console.error('\nPlease ensure supabaseClient.js contains the expected placeholders:');
+  console.error('  const SUPABASE_URL = \'<REDACTED_SUPABASE_URL>\';');
+  console.error('  const SUPABASE_ANON_KEY = \'<REDACTED_SUPABASE_ANON_KEY>\';');
+  process.exit(1);
+}
 
 fs.writeFileSync(supabaseClientPath, updatedContent, 'utf8');
 

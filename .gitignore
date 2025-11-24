@@ -1,3 +1,3 @@
 node_modules
-./supabaseClient.js
-git rm --cached ./supabaseClient.js.env
+# Keep supabaseClient.js tracked but never commit with real secrets
+# Real secrets are injected during GitHub Actions deployment

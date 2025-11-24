@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deployment Test</title>
+</head>
+<body>
+  <h1>Deployment Test</h1>
+  <div id="status">Testing...</div>
+  <div id="details"></div>
+  
+  <script type="module">
+    const statusDiv = document.getElementById('status');
+    const detailsDiv = document.getElementById('details');
+    
+    async function testDeployment() {
+      const results = [];
+      
+      // Test 1: Can we import supabaseClient?
+      try {
+        const module = await import('./supabaseClient.js');
+        const { supabase } = module;
+        results.push('✓ supabaseClient.js imported successfully');
+        
+        // Test 2: Check if secrets are injected
+        const clientStr = supabase.toString();
+        if (clientStr.includes('REDACTED')) {
+          results.push('✗ Secrets NOT injected - still contains placeholders');
+        } else {
+          results.push('✓ Secrets appear to be injected');
+        }
+        
+        // Test 3: Try a simple Supabase query
+        try {
+          const { data, error } = await supabase.from('gallery').select('id').limit(1);
+          if (error) {
+            results.push(`✗ Supabase query failed: ${error.message}`);
+          } else {
+            results.push('✓ Supabase connection working');
+          }
+        } catch (e) {
+          results.push(`✗ Supabase query error: ${e.message}`);
+        }
+        
+      } catch (e) {
+        results.push(`✗ Failed to import supabaseClient.js: ${e.message}`);
+      }
+      
+      // Test 4: Check if other modules load
+      try {
+        await import('./gallery.js');
+        results.push('✓ gallery.js loaded');
+      } catch (e) {
+        results.push(`✗ gallery.js failed: ${e.message}`);
+      }
+      
+      try {
+        await import('./modals.js');
+        results.push('✓ modals.js loaded');
+      } catch (e) {
+        results.push(`✗ modals.js failed: ${e.message}`);
+      }
+      
+      statusDiv.textContent = 'Test Complete';
+      detailsDiv.innerHTML = '<pre>' + results.join('\n') + '</pre>';
+    }
+    
+    testDeployment();
+  </script>
+</body>
+</html>

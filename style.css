@@ -423,7 +423,7 @@ span {
   transition: none;
 }
 /* --------------------------------------------
-   Responsive Adjustments for Mobile (≤768px)
+   Responsive Adjustments for Mobile (≤1024px)
 -------------------------------------------- */
 @media (max-width: 1024px) {
   body {

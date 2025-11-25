@@ -288,6 +288,10 @@ img {
   margin: 0rem 0.1rem 0.25rem 0;
 }
 
+#modalTags>.tag {
+  background-color: #e070ab;
+}
+
 #gallery {
   grid-area: gal;
   display: flex;

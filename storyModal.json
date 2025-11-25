@@ -19,10 +19,16 @@
             "link": "./story3.html"
         },
         {
-            "title": "(De)Territorialization, (Re)Territorialization, and the Rhizome: Reshaping Design in a Post-Image Society",
-            "author": "Blossom Marquez",
-            "description": "This essay by René Boer is the pre-cursor to his strikingly prescient and relevant book \"Smooth City\". Here the discussion distills what is later expanded upon into a quick and easily understandable critique of the ever expanding and evolving Smooth City. With its scathing critique of gentrification, privitization, and passivity Boer's essay highlights some of the most pressing matters within our contemporary cityscapes.",
+            "title": "The Carrier Bag Theory of Fiction",
+            "author": "Ursula K. Le Guin",
+            "description": "Ursula K. Le Guin's seminal outlines outlines a new theory of fiction, and more generally that of our understanding of life. Here Le Guin hypothesizes that the most pivotal stories, and real actions, are not those of the hero with his weapon, but instead the woman with her basket, her cradle, her container. It is here that we can better understand life not as a series of fantastic conquests but instead as a series of containers which hold and manage flows.",
             "link": "./story4.html"
+        },
+        {
+            "title": "The Situationist International Manifesto",
+            "author": "SI 1960",
+            "description": "This punchy essay written by college students, cultural theorists, and nascent philosophers in 1960 quickly details the Situationist International and its goals. What we see represented is the concept that the current world order is incompatible with humanity and that things are only going to get worse. What they proposed was a radical dissolution of the society as a spectacle, the society of passivity. To push towards the society of unilaterality and total participation the current mode of operation must be destroyed.",
+            "link": "./story5.html"
         }
 ]
 }

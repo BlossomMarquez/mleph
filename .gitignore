@@ -1,3 +1,6 @@
 node_modules
+.env
 # Keep supabaseClient.js tracked but never commit with real secrets
 # Real secrets are injected during GitHub Actions deployment
+# Local dev: run `git update-index --assume-unchanged supabaseClient.js` after injecting secrets
+# To revert: run `git update-index --no-assume-unchanged supabaseClient.js`

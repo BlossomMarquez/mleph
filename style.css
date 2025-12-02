@@ -279,7 +279,7 @@ img {
   margin-top: 0.25rem;
   overflow: scroll;
   width: auto;
-  height: fit-content;
+  height: 25%;
   display: flex;
   flex-wrap: wrap;
 }

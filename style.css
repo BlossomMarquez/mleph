@@ -195,6 +195,7 @@ img {
 
 #infoContent {
   display: flex;
+  overflow: scroll;
 }
 
 /* END INFO MODAL */

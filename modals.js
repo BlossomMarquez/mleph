@@ -90,7 +90,6 @@ function buildImageModal() {
   imageModalElement.setAttribute("aria-modal", "true");
   imageModalElement.innerHTML = `
     <div id="modalContent">
-      <img id="modalImg">
       <div id="modalText">
         <div id="modalHead"></div>
         <figcaption id="modalCaption"></figcaption>
@@ -113,16 +112,35 @@ function buildImageModal() {
   });
 }
 
-export function openImageModal(imageUrl, head, title, tags) {
+export function openImageModal(mediaUrl, head, title, tags, mediaType = "image") {
   if (!imageModalElement) buildImageModal();
   closeAllModals();
-  const modalImg = imageModalElement.querySelector("#modalImg");
+  const modalContent = imageModalElement.querySelector("#modalContent");
   const modalHead = imageModalElement.querySelector("#modalHead");
   const modalCaption = imageModalElement.querySelector("#modalCaption");
   const modalTags = imageModalElement.querySelector("#modalTags");
 
-  modalImg.src = imageUrl;
-  modalImg.alt = title || "image";
+  // Remove any existing media from previous modal
+  const existingMedia = modalContent.querySelector("img, video");
+  if (existingMedia) existingMedia.remove();
+
+  // Create and insert media at the beginning of modalContent (before modalText)
+  if (mediaType === "video") {
+    const video = document.createElement("video");
+    video.id = "modalVideo";
+    video.src = mediaUrl;
+    video.controls = false;
+    video.autoplay = true;
+    video.muted = true;
+    modalContent.insertBefore(video, modalContent.firstChild);
+  } else {
+    const img = document.createElement("img");
+    img.id = "modalImg";
+    img.src = mediaUrl;
+    img.alt = title || "image";
+    modalContent.insertBefore(img, modalContent.firstChild);
+  }
+
   modalHead.innerHTML = sanitize(head || "");
   modalCaption.innerHTML = sanitize(title || "");
   modalTags.innerHTML = (tags || [])

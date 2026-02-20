@@ -4,20 +4,32 @@ import { supabase } from "./supabaseClient.js";
 
 const gallery = document.getElementById("gallery");
 
-export function createFigure(imageUrl, head, title, tags) {
+export function createFigure(mediaUrl, head, title, tags, mediaType = "image") {
   const figure = document.createElement("figure");
   figure.classList.add("child");
-  figure.dataset.url = imageUrl;
+  figure.dataset.url = mediaUrl;
   figure.dataset.head = head || "";
   figure.dataset.title = title || "";
   figure.dataset.tags = JSON.stringify(tags || []);
+  figure.dataset.mediaType = mediaType;
 
-  const img = document.createElement("img");
-  img.src = imageUrl;
-  img.alt = title || tags.join(", ") || "image";
-  img.style.cursor = "pointer";
-  img.loading = "lazy";
-  img.decoding = "async";
+  let media;
+  if (mediaType === "video") {
+    media = document.createElement("video");
+    media.src = mediaUrl;
+    media.controls = false;
+    media.autoplay = true;
+    media.muted = true;
+    media.loop = true;
+    media.style.cursor = "pointer";
+  } else {
+    media = document.createElement("img");
+    media.src = mediaUrl;
+    media.alt = title || tags.join(", ") || "media";
+    media.style.cursor = "pointer";
+    media.loading = "lazy";
+    media.decoding = "async";
+  }
 
   const headDiv = document.createElement("div");
   headDiv.className = "head";
@@ -34,7 +46,7 @@ export function createFigure(imageUrl, head, title, tags) {
     .map((t) => `<span class="tag">${sanitize(t)}</span>`)
     .join(" ");
 
-  figure.appendChild(img);
+  figure.appendChild(media);
   figure.appendChild(headDiv);
   figure.appendChild(caption);
   figure.appendChild(tagsDiv);
@@ -45,7 +57,7 @@ export function createFigure(imageUrl, head, title, tags) {
 export function renderGallery(items) {
   if (!gallery) return;
   if (!items || !items.length) {
-    gallery.innerHTML = "<p>No images found.</p>";
+    gallery.innerHTML = "<p>No media found.</p>";
     return;
   }
 
@@ -54,7 +66,8 @@ export function renderGallery(items) {
     const tagsArray = item.image_tags?.map((t) => t.tag) || item.tags || [];
     const cleanHead = sanitize(item.head || "");
     const cleanTitle = sanitize(item.title || "");
-    const fig = createFigure(item.image_url, cleanHead, cleanTitle, tagsArray);
+    const mediaType = item.media_type || "image";
+    const fig = createFigure(item.image_url, cleanHead, cleanTitle, tagsArray, mediaType);
     // store id if present
     if (item.id) fig.dataset.id = item.id;
     gallery.appendChild(fig);
@@ -64,7 +77,7 @@ export function renderGallery(items) {
 export async function loadGallery() {
   const { data, error } = await supabase
     .from("gallery")
-    .select("id, head, title, image_url, image_tags(tag)")
+    .select("id, head, title, image_url, media_type, image_tags(tag)")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -88,15 +101,16 @@ export function attachDelegatedEvents() {
       return;
     }
 
-    const img = e.target.closest("img");
-    if (img) {
-      const fig = img.closest("figure");
+    const media = e.target.closest("img, video");
+    if (media) {
+      const fig = media.closest("figure");
       if (!fig) return;
-      const imageUrl = fig.dataset.url;
+      const mediaUrl = fig.dataset.url;
       const head = fig.dataset.head;
       const title = fig.dataset.title;
       const tags = JSON.parse(fig.dataset.tags || "[]");
-      openImageModal(imageUrl, head, title, tags);
+      const mediaType = fig.dataset.mediaType || "image";
+      openImageModal(mediaUrl, head, title, tags, mediaType);
     }
   });
 }

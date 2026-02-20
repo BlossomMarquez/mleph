@@ -25,7 +25,7 @@ export function initUploader({ formId = "uploadForm", fileInputId = "imageUpload
   fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
     if (file) fileLabel.textContent = `Selected: ${truncateFileName(file.name)}`;
-    else fileLabel.textContent = "Select Image";
+    else fileLabel.textContent = "Select File";
   });
 
   form.addEventListener("submit", async (e) => {
@@ -37,11 +37,14 @@ export function initUploader({ formId = "uploadForm", fileInputId = "imageUpload
 
     const uniqueTags = [...new Set(rawTags.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean))];
 
-    if (!fileInput.files.length) return alert("Please upload an image");
+    if (!fileInput.files.length) return alert("Please upload a file");
     if (uniqueTags.length === 0) return alert("Please enter atleast one tag");
 
     const file = fileInput.files[0];
-    if (!file.type.startsWith("image/")) return alert("Please upload an image file");
+    const isImage = file.type.startsWith("image/");
+    const isVideo = file.type.startsWith("video/");
+    
+    if (!isImage && !isVideo) return alert("Please upload an image or video file");
 
     const fileName = `${Date.now()}_${file.name}`;
 
@@ -63,18 +66,22 @@ export function initUploader({ formId = "uploadForm", fileInputId = "imageUpload
       return alert(urlError.message);
     }
 
-    const imageUrl = publicData.publicUrl;
+    const mediaUrl = publicData.publicUrl;
+    const mediaType = isImage ? "image" : "video";
 
-    // mark placeholder with the imageUrl so realtime subscriber can detect it
+    // mark placeholder with the mediaUrl so realtime subscriber can detect it
     try {
-      if (placeholder) placeholder.dataset.uploadingUrl = imageUrl;
+      if (placeholder) {
+        placeholder.dataset.uploadingUrl = mediaUrl;
+        placeholder.dataset.mediaType = mediaType;
+      }
     } catch (e) {
       /* ignore */
     }
 
     const { data: galleryData, error: insertError } = await supabase
       .from("gallery")
-      .insert([{ head, title, image_url: imageUrl }])
+      .insert([{ head, title, image_url: mediaUrl, media_type: mediaType }])
       .select();
 
     if (insertError) {
@@ -82,13 +89,13 @@ export function initUploader({ formId = "uploadForm", fileInputId = "imageUpload
       return alert(insertError.message);
     }
 
-    const imageId = galleryData[0].id;
-    await supabase.from("image_tags").insert(uniqueTags.map((tag) => ({ image_id: imageId, tag })));
+    const mediaId = galleryData[0].id;
+    await supabase.from("image_tags").insert(uniqueTags.map((tag) => ({ image_id: mediaId, tag })));
 
     form.reset();
-    if (fileLabel) fileLabel.textContent = "Select Image";
+    if (fileLabel) fileLabel.textContent = "Select File";
 
-    const figure = createFigure(imageUrl, head, title, uniqueTags);
+    const figure = createFigure(mediaUrl, head, title, uniqueTags, mediaType);
     if (gallery) {
       gallery.replaceChild(figure, placeholder);
       // remove temporary marker

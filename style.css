@@ -28,7 +28,7 @@ body {
 a,
 a:active,
 a:after {
-  color: #1ef930;
+  color: #e65252;
 }
 
 a:hover {
@@ -114,7 +114,7 @@ label:active {
   background-color: #145976;
 }
 
-img {
+img, video {
   width: 100%;
 }
 
@@ -329,8 +329,8 @@ img {
 
 #modalImg {
   max-height: 100vh;
-  max-width: 100vw;
-  object-fit: contain;
+  max-width: 80vw;
+  object-fit: cover;
   border-radius: 0;
 }
 
